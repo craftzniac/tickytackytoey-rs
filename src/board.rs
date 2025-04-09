@@ -1,4 +1,6 @@
-use crate::utils::{PlayerSlotValue, SlotValue};
+#![allow(dead_code)]
+
+use crate::utils::{PlayerSlotValue, SlotCoord, SlotPosition, SlotUpdateStatus, SlotValue};
 use std::fmt;
 
 #[derive(Debug)]
@@ -17,12 +19,22 @@ impl Board {
         }
     }
 
-    /// update the board state. Usually invoked by a Player in order to play a turn on the board
-    pub fn update(&mut self, slot_position: SlotRepr, slot_value: PlayerSlotValue) {
+    /// update the specified slot on the board using the value provided. Usually invoked by a Player in order to put his/her piece on a specific slot on the board
+    pub fn update(
+        &mut self,
+        slot_position: SlotPosition,
+        player_slot_value: &PlayerSlotValue,
+    ) -> SlotUpdateStatus {
+        let coords = SlotCoord::from(slot_position);
+        // check if slot is already played by a player
+        let slot = &self.state[coords.0][coords.1];
 
-        // TODO: I need to map from some user-friendly string for representing a position on the
-        // board, to actual position within the 2d array. This way, player has a way to point to a
-        // specific slot on the board which he/she wants to place their piece
+        if let SlotValue::PlayerX | SlotValue::PlayerO = slot {
+            return SlotUpdateStatus::Duplicate;
+        }
+
+        self.state[coords.0][coords.1] = (player_slot_value.clone()).try_into().unwrap();
+        return SlotUpdateStatus::Success;
     }
 }
 

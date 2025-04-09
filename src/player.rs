@@ -1,16 +1,26 @@
-use crate::utils::SlotValue;
+#![allow(dead_code)]
+use crate::utils::{PlayerSlotValue, SlotPosition, get_user_input};
 
+#[derive(Clone)]
 pub(crate) struct Player {
     name: String,
-    slot_value: SlotValue,
+    pub slot_value: PlayerSlotValue,
+}
+
+impl std::fmt::Display for Player {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} ({})", self.name, self.slot_value)
+    }
 }
 
 impl Player {
-    pub fn new(name: String, slot_value: SlotValue) -> Self {
+    pub fn new(name: String, slot_value: PlayerSlotValue) -> Self {
         Self { name, slot_value }
     }
 
-    fn play_turn(&self) {
-        todo!("implemnet play_turn")
+    pub fn get_move(&self) -> SlotPosition {
+        // accept input from cmd
+        let prompt_string = format!("{} move: ", self);
+        return get_user_input(prompt_string);
     }
 }

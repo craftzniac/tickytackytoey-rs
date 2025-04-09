@@ -1,4 +1,4 @@
-The major data here is the board's data (i.e the slots on the board and who has marked them, if they're marked at all). 
+The main data here is the board's data (i.e the slots on the board and who has marked them, if they're marked at all). 
 
 board data   ----> map data unto ---->  simple ascii art renderer  = the game board
 
