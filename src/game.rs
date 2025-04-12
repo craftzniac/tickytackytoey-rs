@@ -26,7 +26,15 @@ impl Game {
 
     pub fn winner_or_draw(&mut self) -> WinState {
         // check the board to see if there's a draw, or a winner
-        WinState::None
+        let result = self.board.check_match();
+
+        match result {
+            WinState::PlayerX => self.winner = Some(self.player_x.clone()),
+            WinState::PlayerO => self.winner = Some(self.player_o.clone()),
+            _ => {}
+        }
+
+        result
     }
 
     pub fn print_board(&self) {
@@ -55,18 +63,19 @@ impl Game {
     }
 
     pub(crate) fn play(&mut self) {
+        self.print_board();
         // game loop repeats as long as there isn't a winner and there's no draw
         while let WinState::None = self.winner_or_draw() {
-            self.print_board();
             self.switch_player_turn();
             self.play_player_turn();
+            self.print_board();
         }
 
         match self.winner_or_draw() {
-            WinState::Draw => {}
+            WinState::Draw => println!("It's a draw!"),
             WinState::PlayerO | WinState::PlayerX => {
                 // print the winner
-                println!("Player {} has won this round", self.winner_or_draw());
+                println!("Player {} has won this round", self.winner.clone().unwrap());
             }
             _ => {
                 panic!("This was never supposed to run");

@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 
-use crate::utils::{PlayerSlotValue, SlotCoord, SlotPosition, SlotUpdateStatus, SlotValue};
+use crate::utils::{
+    PlayerSlotValue, SlotCoord, SlotPosition, SlotUpdateStatus, SlotValue, WinState,
+};
 use std::fmt;
 
 #[derive(Debug)]
@@ -35,6 +37,69 @@ impl Board {
 
         self.state[coords.0][coords.1] = (player_slot_value.clone()).try_into().unwrap();
         return SlotUpdateStatus::Success;
+    }
+
+    pub fn check_match(&self) -> WinState {
+        // checking the rows
+        //  ar, as, at
+        if self.state[0][0] == self.state[0][1] && self.state[0][1] == self.state[0][2] {
+            return WinState::from(self.state[0][0].clone());
+        }
+
+        //  br, bs, bt
+        if self.state[1][0] == self.state[1][1] && self.state[1][1] == self.state[1][2] {
+            return WinState::from(self.state[1][0].clone());
+        }
+
+        //  cr, cs, ct
+        if self.state[2][0] == self.state[2][1] && self.state[2][1] == self.state[2][2] {
+            return WinState::from(self.state[2][0].clone());
+        }
+
+        // checking the columns
+        //  ar, br, cr
+        if self.state[0][0] == self.state[1][0] && self.state[1][0] == self.state[2][0] {
+            return WinState::from(self.state[0][0].clone());
+        }
+
+        //  as, bs, cs
+        if self.state[0][1] == self.state[1][1] && self.state[1][1] == self.state[2][1] {
+            return WinState::from(self.state[0][1].clone());
+        }
+
+        //  at, bt, ct
+        if self.state[0][2] == self.state[1][2] && self.state[1][2] == self.state[2][2] {
+            return WinState::from(self.state[0][2].clone());
+        }
+
+        // check the diagonals
+        // ar, bs, ct
+        if self.state[0][0] == self.state[1][1] && self.state[1][1] == self.state[2][2] {
+            return WinState::from(self.state[0][0].clone());
+        }
+
+        // at, bs, cr
+        if self.state[0][2] == self.state[1][1] && self.state[1][1] == self.state[2][0] {
+            return WinState::from(self.state[0][2].clone());
+        }
+
+        // if slots are all filled, then it's a draw
+        let is_full = {
+            let mut is_full = true;
+            for i in self.state.concat() {
+                if i == SlotValue::Empty {
+                    is_full = false;
+                    break;
+                }
+            }
+            is_full
+        };
+
+        if is_full {
+            return WinState::Draw;
+        }
+
+        return WinState::None;
     }
 }
 

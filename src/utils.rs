@@ -4,7 +4,7 @@ use std::{
     io::{self, Write},
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum SlotValue {
     PlayerO,
     PlayerX,
@@ -134,6 +134,16 @@ pub enum WinState {
     PlayerX,
     None,
     Draw,
+}
+
+impl From<SlotValue> for WinState {
+    fn from(value: SlotValue) -> Self {
+        match value {
+            SlotValue::PlayerO => WinState::PlayerO,
+            SlotValue::PlayerX => WinState::PlayerX,
+            SlotValue::Empty => WinState::None,
+        }
+    }
 }
 
 impl Display for WinState {
