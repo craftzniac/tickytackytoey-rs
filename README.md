@@ -5,3 +5,6 @@ A simple commandline tictactoe game written in Rust.
 - `git clone https://github.com/craftzniac/tickytackytoey-rs` 
 - `cd tickytackytoey-rs`
 - `cargo run`
+
+## Screenshot
+![screenshot](/screenshot.png)
